@@ -8,14 +8,8 @@ use BaconQrCode\Renderer\Eye\EyeInterface;
 use BaconQrCode\Renderer\Path\Path;
 use SimpleSoftwareIO\QrCode\Singleton;
 
-/**
- * Renders the outer eye as solid with a curved corner and inner eye as a circle.
- */
-final class PointyEye implements EyeInterface
+final class CircleEye implements EyeInterface, Singleton
 {
-    /**
-     * @var self|null
-     */
     private static $instance;
 
     private function __construct() {}
@@ -28,17 +22,17 @@ final class PointyEye implements EyeInterface
     public function getExternalPath(): Path
     {
         return (new Path())
-            ->move(-3.5, 3.5)
-            ->line(-3.5, 0)
-            ->ellipticArc(3.5, 3.5, 0, false, true, 0, -3.5)
-            ->line(3.5, -3.5)
-            ->line(3.5, 3.5)
+            ->move(3.5, 0)
+            ->ellipticArc(3.5, 3.5, 0., false, true, 0., 3.5)
+            ->ellipticArc(3.5, 3.5, 0., false, true, -3.5, 0.)
+            ->ellipticArc(3.5, 3.5, 0., false, true, 0., -3.5)
+            ->ellipticArc(3.5, 3.5, 0., false, true, 3.5, 0.)
             ->close()
             ->move(2.5, 0)
-            ->ellipticArc(2.5, 2.5, 0, false, true, 0, 2.5)
-            ->ellipticArc(2.5, 2.5, 0, false, true, -2.5, 0)
-            ->ellipticArc(2.5, 2.5, 0, false, true, 0, -2.5)
-            ->ellipticArc(2.5, 2.5, 0, false, true, 2.5, 0)
+            ->ellipticArc(2.5, 2.5, 0., false, true, 0., 2.5)
+            ->ellipticArc(2.5, 2.5, 0., false, true, -2.5, 0.)
+            ->ellipticArc(2.5, 2.5, 0., false, true, 0., -2.5)
+            ->ellipticArc(2.5, 2.5, 0., false, true, 2.5, 0.)
             ->close()
         ;
     }

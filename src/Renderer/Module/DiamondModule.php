@@ -1,24 +1,22 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace BaconQrCode\Renderer\Module;
 
 use BaconQrCode\Encoder\ByteMatrix;
 use BaconQrCode\Exception\InvalidArgumentException;
+use BaconQrCode\Renderer\Module\ModuleInterface;
 use BaconQrCode\Renderer\Path\Path;
+use SimpleSoftwareIO\QrCode\Singleton;
 
-/**
- * Renders individual modules as dots.
- */
-final class DotsModule implements ModuleInterface
+final class DiamondModule implements ModuleInterface, Singleton
 {
     public const LARGE = 1;
     public const MEDIUM = .8;
     public const SMALL = .6;
 
-    /**
-     * @var float
-     */
+    private static $instance;
     private $size;
 
     public function __construct(float $size)
@@ -30,7 +28,12 @@ final class DotsModule implements ModuleInterface
         $this->size = $size;
     }
 
-    public function createPath(ByteMatrix $matrix) : Path
+    public static function instance(): self
+    {
+        return self::$instance ?: self::$instance = new self(self::SMALL);
+    }
+
+    public function createPath(ByteMatrix $matrix): Path
     {
         $width = $matrix->getWidth();
         $height = $matrix->getHeight();
@@ -49,12 +52,11 @@ final class DotsModule implements ModuleInterface
 
                 $path = $path
                     ->move($pathX + $this->size, $pathY + $halfSize)
-                    ->ellipticArc($halfSize, $halfSize, 0, false, true, $pathX + $halfSize, $pathY + $this->size)
-                    ->ellipticArc($halfSize, $halfSize, 0, false, true, $pathX, $pathY + $halfSize)
-                    ->ellipticArc($halfSize, $halfSize, 0, false, true, $pathX + $halfSize, $pathY)
-                    ->ellipticArc($halfSize, $halfSize, 0, false, true, $pathX + $this->size, $pathY + $halfSize)
-                    ->close()
-                ;
+                    ->ellipticArc(0, 0, 0, false, true, $pathX + $halfSize, $pathY + $this->size)
+                    ->ellipticArc(0, 0, 0, false, true, $pathX, $pathY + $halfSize)
+                    ->ellipticArc(0, 0, 0, false, true, $pathX + $halfSize, $pathY)
+                    ->ellipticArc(0, 0, 0, false, true, $pathX + $this->size, $pathY + $halfSize)
+                    ->close();
             }
         }
 
